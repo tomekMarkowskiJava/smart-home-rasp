@@ -1,7 +1,9 @@
 package com.markowski.raspberrytest.service;
 
 import com.google.gson.Gson;
+import com.markowski.raspberrytest.mapper.StateMapper;
 import com.markowski.raspberrytest.model.dto.StateDto;
+import com.markowski.raspberrytest.model.entity.State;
 import com.markowski.raspberrytest.model.enums.StateType;
 import com.markowski.raspberrytest.repository.StateRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +27,7 @@ public class StateServiceImpl implements StateService {
     @Override
     public StateDto getState() {
         StateDto newState = new Gson().fromJson(getStateFromServer(), StateDto.class);
-        newState.setDate(ZonedDateTime.now());
-        newState.setType(StateType.REAL);
+        newState = saveState(newState, StateType.REAL);
         log.info(newState.toString());
         return newState;
     }
@@ -40,6 +41,7 @@ public class StateServiceImpl implements StateService {
                 .type(StateType.TEST)
                 .build();
 
+        testState = saveState(testState, StateType.TEST);
         log.info(testState.toString());
         return testState;
     }
@@ -55,13 +57,18 @@ public class StateServiceImpl implements StateService {
             while ((line = reader.readLine()) != null) {
                 jsonState.append(line);
             }
-            if (jsonState.length() == 0){
+            if (jsonState.length() == 0) {
                 throw new RuntimeException();
             }
             return jsonState.toString();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private StateDto saveState(StateDto stateDto, StateType type) {
+        State newState = StateMapper.mapDtoToEntity(stateDto, type);
+        return StateMapper.mapEntityToDto(stateRepository.save(newState));
     }
 
     private String[] getCommand() {

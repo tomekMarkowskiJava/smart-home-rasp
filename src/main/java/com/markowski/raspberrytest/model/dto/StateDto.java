@@ -4,10 +4,11 @@ import com.markowski.raspberrytest.model.enums.StateType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.time.ZonedDateTime;
 
-@Data
+@Getter
 @AllArgsConstructor
 @Builder
 public class StateDto {

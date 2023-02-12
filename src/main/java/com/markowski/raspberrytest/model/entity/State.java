@@ -1,12 +1,17 @@
 package com.markowski.raspberrytest.model.entity;
 
 import com.markowski.raspberrytest.model.enums.StateType;
+import lombok.Generated;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
 @Table
+@Setter
+@Getter
 public class State {
 
     @Id
